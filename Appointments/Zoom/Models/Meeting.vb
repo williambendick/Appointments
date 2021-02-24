@@ -1,5 +1,5 @@
 ﻿
-Namespace Appointments.Zoom.Models
+Namespace Zoom
     Public Class Meeting
 
         Public Property Id As Long

@@ -1,7 +1,4 @@
-﻿
-Imports Appointments.Appointments
-
-Public Class _Default
+﻿Public Class _Default
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -44,7 +41,7 @@ Public Class _Default
         If Request.Cookies("ZAT") Is Nothing Then
             Zoom.API.RequestUserAuthorization("create-meeting")
         Else
-            Dim meeting As Zoom.Models.Meeting = New Zoom.Models.Meeting() With
+            Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
             {
                 .Topic = "Test Meeting",
                 .StartTime = Date.Now.AddHours(1),

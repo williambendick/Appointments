@@ -1,5 +1,5 @@
 ﻿
-Namespace Appointments.Zoom.Models
+Namespace Zoom
     Public Class Response(Of T)
 
         Public Property Data As T

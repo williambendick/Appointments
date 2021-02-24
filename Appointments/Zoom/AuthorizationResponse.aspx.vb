@@ -1,6 +1,4 @@
-﻿Imports Appointments.Appointments
-
-Public Class AuthorizationResponse
+﻿Public Class AuthorizationResponse
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs)
@@ -36,7 +34,7 @@ Public Class AuthorizationResponse
             result = "error"
         End Try
 
-        HttpContext.Current.Response.Redirect($"~/?authorizationResult={result}")
+        HttpContext.Current.Response.Redirect($"~/Zoom/TestUI.aspx?authorizationResult={result}")
     End Sub
 
 End Class

@@ -1,11 +1,10 @@
 ﻿Imports System.IO
 Imports System.Net
 Imports System.Web.Configuration
-Imports Appointments.Appointments.Zoom.Models
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Serialization
 
-Namespace Appointments.Zoom
+Namespace Zoom
     Public Class API
         Shared ReadOnly encodedClientCredentials As String
 

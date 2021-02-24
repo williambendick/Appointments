@@ -1,5 +1,5 @@
 ﻿
-Namespace Appointments.Zoom.Models
+Namespace Zoom
     Public Class ResponseError
 
         Public Property Code As String

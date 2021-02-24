@@ -1,5 +1,5 @@
 ﻿
-Namespace Appointments.Zoom.Models
+Namespace Zoom
     Public Class TokenResponse
 
         Public Property AccessToken As String
