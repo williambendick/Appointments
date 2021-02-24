@@ -1,4 +1,7 @@
-﻿Public Class _Default
+﻿
+Imports Appointments.Appointments
+
+Public Class _Default
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
@@ -37,19 +40,26 @@
 
     Protected Sub CreateZoomMeeting_Click(sender As Object, e As EventArgs) Handles btnCreateZoomMeeting.Click
 
-        Dim meeting As ZoomMeeting = New ZoomMeeting() With
-        {
-            .Topic = "Test Meeting",
-            .StartTime = Date.Now.AddHours(1),
-            .Duration = 120
-        }
-
-        Dim result As ZoomResponse = meeting.Create()
-
-        If result.Error = Nothing Then
-            lblResult.Text = "Zoom meeting created with id " & result.Id
+        'if zoom refresh token does not exist for this user, send to zoom to authorize application
+        If Request.Cookies("ZAT") Is Nothing Then
+            Zoom.API.RequestUserAuthorization("create-meeting")
         Else
-            lblResult.Text = "An error occurred: " & result.Error
+            Dim meeting As Zoom.Models.Meeting = New Zoom.Models.Meeting() With
+            {
+                .Topic = "Test Meeting",
+                .StartTime = Date.Now.AddHours(1),
+                .Duration = 120
+            }
+
+            Dim result As String = meeting.Create()
+
+            If result = "success" Then
+                lblResult.Text = "Zoom meeting created with id " & meeting.Id.ToString()
+            ElseIf result = "access token does not exist" Then
+                Zoom.API.RequestUserAuthorization("create-meeting")
+            Else
+                lblResult.Text = "An error occurred: " & result
+            End If
         End If
 
     End Sub
