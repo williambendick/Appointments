@@ -183,6 +183,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Zoom\AuthorizationResponse.aspx" />
+    <Content Include="Zoom\TestUI.aspx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -282,6 +283,13 @@
     <Compile Include="Zoom\Models\Response.vb" />
     <Compile Include="Zoom\Models\ResponseError.vb" />
     <Compile Include="Zoom\Models\TokenResponse.vb" />
+    <Compile Include="Zoom\TestUI.aspx.designer.vb">
+      <DependentUpon>TestUI.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zoom\TestUI.aspx.vb">
+      <DependentUpon>TestUI.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
