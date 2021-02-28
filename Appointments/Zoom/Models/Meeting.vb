@@ -41,10 +41,10 @@ Namespace Zoom
 
             If accessToken Is Nothing Then Throw New Exception("access token does not exist")
 
-            Dim requestUri As String = $"https://api.zoom.us/v2/users/me/meetings"
+            Dim requestUri As String = "https://api.zoom.us/v2/users/me/meetings"
 
             Dim requestHeaders As NameValueCollection = New NameValueCollection() From {
-                {"Authorization", $"Bearer {accessToken}"}
+                {"Authorization", "Bearer " & accessToken}
             }
 
             Return API.Request(Of Meeting, Meeting)(requestUri, "post", requestHeaders, Me)

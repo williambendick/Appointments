@@ -9,7 +9,7 @@ Namespace Zoom
         Shared ReadOnly encodedClientCredentials As String
 
         Shared Sub New()
-            Dim credentialBytes As Byte() = Encoding.ASCII.GetBytes($"{WebConfigurationManager.AppSettings("ZoomKey")}:{WebConfigurationManager.AppSettings("ZoomSecret")}")
+            Dim credentialBytes As Byte() = Encoding.ASCII.GetBytes(WebConfigurationManager.AppSettings("ZoomKey") & ":" & WebConfigurationManager.AppSettings("ZoomSecret"))
             encodedClientCredentials = Convert.ToBase64String(credentialBytes)
         End Sub
 
@@ -18,16 +18,16 @@ Namespace Zoom
             Dim guid As String = System.Guid.NewGuid.ToString()
 
             'add validation cookie to user's browser. when zoom sends authorization response ensure there is a match
-            Dim cookie As HttpCookie = New HttpCookie("ZUV", $"{guid}")
+            Dim cookie As HttpCookie = New HttpCookie("ZUV", guid)
             cookie.Expires = Date.Now.AddMinutes(5)
             cookie.HttpOnly = True
             cookie.Secure = True
             HttpContext.Current.Response.Cookies.Add(cookie)
 
-            Dim zoomUri As String = $"https://zoom.us/oauth/authorize?response_type=code" &
-                $"&client_id={WebConfigurationManager.AppSettings("ZoomKey")}" &
-                $"&state={guid}|{action}" &
-                $"&redirect_uri={WebConfigurationManager.AppSettings("ZoomRedirectURI")}"
+            Dim zoomUri As String = "https://zoom.us/oauth/authorize?response_type=code" &
+                "&client_id=" & WebConfigurationManager.AppSettings("ZoomKey") &
+                "&state=" & guid & "|" & action &
+                "&redirect_uri=" & WebConfigurationManager.AppSettings("ZoomRedirectURI")
 
             Uri.EscapeUriString(zoomUri)
 
@@ -38,14 +38,14 @@ Namespace Zoom
         'get initial access token from zoom after user has authorized application
         Friend Shared Sub InitializeTokens(code As String)
 
-            Dim requestUri As String = $"https://zoom.us/oauth/token?grant_type=authorization_code" &
-                $"&code={code}" &
-                $"&redirect_uri={WebConfigurationManager.AppSettings("ZoomRedirectURI")}"
+            Dim requestUri As String = "https://zoom.us/oauth/token?grant_type=authorization_code" &
+                "&code=" & code &
+                "&redirect_uri=" & WebConfigurationManager.AppSettings("ZoomRedirectURI")
 
             Uri.EscapeUriString(requestUri)
 
             Dim requestHeaders = New NameValueCollection() From {
-                {"Authorization", $"Basic {encodedClientCredentials}"}
+                {"Authorization", "Basic " & encodedClientCredentials}
             }
 
             Dim result As Response(Of TokenResponse) = Request(Of TokenResponse, Object)(requestUri, "post", requestHeaders, Nothing)
@@ -65,10 +65,10 @@ Namespace Zoom
 
             If refreshedToken Is Nothing Then Throw New Exception("refresh token does not exist.")
 
-            Dim requestUri As String = $"https://zoom.us/oauth/token?grant_type=refresh_token&refresh_token={refreshedToken}"
+            Dim requestUri As String = "https://zoom.us/oauth/token?grant_type=refresh_token&refresh_token=" & refreshedToken
 
             Dim requestHeaders = New NameValueCollection() From {
-                {"Authorization", $"Basic {encodedClientCredentials}"}
+                {"Authorization", "Basic " & encodedClientCredentials}
             }
 
             Dim result As Response(Of TokenResponse) = Request(Of TokenResponse, Object)(requestUri, "post", requestHeaders, Nothing)

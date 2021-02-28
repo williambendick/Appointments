@@ -34,7 +34,7 @@
             result = "error"
         End Try
 
-        HttpContext.Current.Response.Redirect($"~/Zoom/TestUI.aspx?authorizationResult={result}")
+        HttpContext.Current.Response.Redirect("~/Zoom/TestUI.aspx?authorizationResult=" & result)
     End Sub
 
 End Class
