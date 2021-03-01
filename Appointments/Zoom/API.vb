@@ -14,7 +14,7 @@ Namespace Zoom
         End Sub
 
         'redirect user to zoom site to authorize this application
-        Friend Shared Sub RequestUserAuthorization(ByVal action As String)
+        Friend Shared Sub RequestUserAuthorization(argument As String)
             Dim guid As String = System.Guid.NewGuid.ToString()
 
             'add validation cookie to user's browser. when zoom sends authorization response ensure there is a match
@@ -26,7 +26,7 @@ Namespace Zoom
 
             Dim zoomUri As String = "https://zoom.us/oauth/authorize?response_type=code" &
                 "&client_id=" & WebConfigurationManager.AppSettings("ZoomKey") &
-                "&state=" & guid & "|" & action &
+                "&state=" & guid & "|" & argument &
                 "&redirect_uri=" & WebConfigurationManager.AppSettings("ZoomRedirectURI")
 
             Uri.EscapeUriString(zoomUri)

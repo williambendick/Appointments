@@ -12,22 +12,17 @@
                 result = "error"
             Else
                 Dim userValidationId As String = Request.QueryString("state").Split("|"c)(0)
-                Dim action As String = Request.QueryString("state").Split("|"c)(1)
+                Dim argument As String = Request.QueryString("state").Split("|"c)(1)
 
                 'ensure that user id returned from zoom matches user cookie created when starting authorization process
                 If userValidationId = Request.Cookies("ZUV").Value Then
                     Zoom.API.InitializeTokens(Request.QueryString("code"))
-                    result = "success"
 
-                    Select Case action
-                        Case "create-meeting"
-                        Case Else
-                    End Select
-
+                    'if authorization successful, return the arg that was passed when calling API.RequestUserAuthorization method
+                    result = argument
                 Else
                     result = "error"
                 End If
-
             End If
 
         Catch ex As Exception
