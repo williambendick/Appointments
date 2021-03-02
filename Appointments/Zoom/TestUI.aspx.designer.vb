@@ -23,22 +23,49 @@ Partial Public Class TestUI
     Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
 
     '''<summary>
-    '''btnCreateGoogleEvent control.
+    '''btnCreateMeeting control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnCreateGoogleEvent As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnCreateMeeting As Global.System.Web.UI.WebControls.Button
 
     '''<summary>
-    '''btnCreateZoomMeeting control.
+    '''btnUpdateMeeting control.
     '''</summary>
     '''<remarks>
     '''Auto-generated field.
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
-    Protected WithEvents btnCreateZoomMeeting As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents btnUpdateMeeting As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''txtUpdateMeeting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtUpdateMeeting As Global.System.Web.UI.WebControls.TextBox
+
+    '''<summary>
+    '''btnDeleteMeeting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents btnDeleteMeeting As Global.System.Web.UI.WebControls.Button
+
+    '''<summary>
+    '''txtDeleteMeeting control.
+    '''</summary>
+    '''<remarks>
+    '''Auto-generated field.
+    '''To modify move field declaration from designer file to code-behind file.
+    '''</remarks>
+    Protected WithEvents txtDeleteMeeting As Global.System.Web.UI.WebControls.TextBox
 
     '''<summary>
     '''Label1 control.
@@ -57,13 +84,4 @@ Partial Public Class TestUI
     '''To modify move field declaration from designer file to code-behind file.
     '''</remarks>
     Protected WithEvents lblResult As Global.System.Web.UI.WebControls.Label
-
-    '''<summary>
-    '''hdnCalendarEventId control.
-    '''</summary>
-    '''<remarks>
-    '''Auto-generated field.
-    '''To modify move field declaration from designer file to code-behind file.
-    '''</remarks>
-    Protected WithEvents hdnCalendarEventId As Global.System.Web.UI.WebControls.HiddenField
 End Class
