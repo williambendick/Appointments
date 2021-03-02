@@ -14,7 +14,7 @@ Namespace Zoom
         End Sub
 
         'redirect user to zoom site to authorize this application
-        Friend Shared Sub RequestUserAuthorization(argument As String)
+        Public Shared Sub RequestUserAuthorization(argument As String)
             Dim guid As String = System.Guid.NewGuid.ToString()
 
             'add validation cookie to user's browser. when zoom sends authorization response ensure there is a match
@@ -36,7 +36,7 @@ Namespace Zoom
         End Sub
 
         'get initial access token from zoom after user has authorized application
-        Friend Shared Sub InitializeTokens(code As String)
+        Public Shared Sub InitializeTokens(code As String)
 
             Dim requestUri As String = "https://zoom.us/oauth/token?grant_type=authorization_code" &
                 "&code=" & code &
@@ -53,13 +53,13 @@ Namespace Zoom
             If result.Error Is Nothing Then
                 SetTokens(result.Data.AccessToken, result.Data.RefreshToken)
             Else
-                Throw New Exception(result.[Error].Message)
+                Throw New Exception(result.Error.Message)
             End If
 
         End Sub
 
         'refresh expired tokens
-        Friend Shared Function RefreshToken() As String
+        Public Shared Function RefreshToken() As String
 
             Dim refreshedToken As String = GetToken("refresh")
 
@@ -100,7 +100,7 @@ Namespace Zoom
         End Sub
 
         'get user's access or refresh token if it exists
-        Friend Shared Function GetToken(tokenType As String) As String
+        Public Shared Function GetToken(tokenType As String) As String
 
             Dim cookieName As String = If(tokenType.ToLower() = "access", "ZAT", If(tokenType = "refresh", "ZRT", Nothing))
 
@@ -114,11 +114,11 @@ Namespace Zoom
         End Function
 
         'make zoom request 
-        Friend Shared Function Request(Of Tresponse, Trequest)(uri As String, httpMethod As String, headers As NameValueCollection, requestObject As Trequest) As Response(Of Tresponse)
+        Public Shared Function Request(Of Tresponse, Trequest)(uri As String, httpMethod As String, headers As NameValueCollection, requestObject As Trequest) As Response(Of Tresponse)
 
             Dim response As Response(Of Tresponse) = New Response(Of Tresponse)()
             Dim webRequest As HttpWebRequest = CType(webRequest.Create(uri), HttpWebRequest)
-            webRequest.Method = httpMethod
+            webRequest.Method = httpMethod.ToUpper
             webRequest.Headers.Add(headers)
             webRequest.ContentType = "application/json"
             webRequest.KeepAlive = False
@@ -140,6 +140,9 @@ Namespace Zoom
                 response.Data = DeserializeData(Of Tresponse)(responseString)
 
             Catch wex As WebException
+
+                response.Error = New ResponseError()
+
                 Using exceptionResponse As WebResponse = wex.Response
                     Try
                         Dim httpResponse As HttpWebResponse = CType(exceptionResponse, HttpWebResponse)
