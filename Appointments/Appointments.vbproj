@@ -182,6 +182,9 @@
     <Content Include="client-key.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Google\API.js" />
+    <Content Include="Google\luxon.min.js" />
+    <Content Include="Google\UI.aspx" />
     <Content Include="Zoom\AuthorizationResponse.aspx" />
     <Content Include="Zoom\TestUI.aspx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
@@ -230,6 +233,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="GoogleEvent.vb" />
+    <Compile Include="Google\UI.aspx.designer.vb">
+      <DependentUpon>UI.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Google\UI.aspx.vb">
+      <DependentUpon>UI.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
