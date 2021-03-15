@@ -187,6 +187,12 @@
     <Content Include="Google\UI.aspx" />
     <Content Include="Zoom\AuthorizationResponse.aspx" />
     <Content Include="Zoom\TestUI.aspx" />
+    <Content Include="Docs\Google JS vs DOTNET Libraries.docx" />
+    <Content Include="Docs\Google JS Library\1 Create Credentials.docx" />
+    <Content Include="Docs\Google JS Library\2 Users need to be added as test users.docx" />
+    <Content Include="Docs\Google JS Library\3 Unauthorize Application.docx" />
+    <Content Include="Docs\Google JS Library\4 Not a valid origin for the client Error.docx" />
+    <Content Include="Docs\Management of Google Calendars via Caldav instead of Google API.docx" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
