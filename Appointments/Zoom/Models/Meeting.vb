@@ -1,6 +1,18 @@
-﻿Imports Newtonsoft.Json
+Imports Newtonsoft.Json
 Namespace Zoom
     Public Class Meeting
+
+        Public Property BMTUserId As String
+
+        Public Property ZoomUserId As String
+
+        Public Property ZoomUserAccessToken As String
+
+        Public Property ZoomUserRefreshToken As String
+
+        Public Property AuthorizationId As Guid?
+
+        Public Property Action As String
 
         Public Property Id As Long?
 
