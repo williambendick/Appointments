@@ -112,6 +112,9 @@ Namespace Zoom
         'make zoom request 
         Public Shared Function Request(Of Tresponse, Trequest)(uri As String, httpMethod As String, headers As NameValueCollection, requestObject As Trequest) As Response(Of Tresponse)
 
+            '.NET 4.5 default SecurityProtocol Is Tls, but zoom requires Tls12
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12
+
             Dim response As Response(Of Tresponse) = New Response(Of Tresponse)()
             Dim webRequest As HttpWebRequest = CType(webRequest.Create(uri), HttpWebRequest)
             webRequest.Method = httpMethod.ToUpper
