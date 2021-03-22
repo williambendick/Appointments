@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Net
 Imports System.Web.Configuration
 Imports Newtonsoft.Json
@@ -14,19 +14,15 @@ Namespace Zoom
         End Sub
 
         'redirect user to zoom site to authorize this application
-        Public Shared Sub RequestUserAuthorization(argument As String)
-            Dim guid As String = System.Guid.NewGuid.ToString()
+        Public Shared Sub RequestUserAuthorization()
 
-            'add validation cookie to user's browser. when zoom sends authorization response ensure there is a match
-            Dim cookie As HttpCookie = New HttpCookie("ZUV", guid)
-            cookie.Expires = Date.Now.AddMinutes(5)
-            cookie.HttpOnly = True
-            cookie.Secure = True
-            HttpContext.Current.Response.Cookies.Add(cookie)
+            Dim authorizationGuid As Guid = Guid.NewGuid
+            Dim session As Meeting = HttpContext.Current.Session("zoomMeeting")
+            session.AuthorizationId = authorizationGuid
 
             Dim zoomUri As String = "https://zoom.us/oauth/authorize?response_type=code" &
                 "&client_id=" & WebConfigurationManager.AppSettings("ZoomKey") &
-                "&state=" & guid & "|" & argument &
+                "&state=" & authorizationGuid.ToString() &
                 "&redirect_uri=" & WebConfigurationManager.AppSettings("ZoomRedirectURI")
 
             Uri.EscapeUriString(zoomUri)

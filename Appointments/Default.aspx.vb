@@ -39,7 +39,7 @@
 
         'if zoom refresh token does not exist for this user, send to zoom to authorize application
         If Request.Cookies("ZAT") Is Nothing Then
-            Zoom.API.RequestUserAuthorization("create-meeting")
+            Zoom.API.RequestUserAuthorization()
         Else
             Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
             {
@@ -53,7 +53,7 @@
             If result = "success" Then
                 lblResult.Text = "Zoom meeting created with id " & meeting.Id.ToString()
             ElseIf result = "access token does not exist" Then
-                Zoom.API.RequestUserAuthorization("create-meeting")
+                Zoom.API.RequestUserAuthorization()
             Else
                 lblResult.Text = "An error occurred: " & result
             End If
