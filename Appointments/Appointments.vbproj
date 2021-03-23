@@ -301,6 +301,7 @@
     <Compile Include="Zoom\Models\Response.vb" />
     <Compile Include="Zoom\Models\ResponseError.vb" />
     <Compile Include="Zoom\Models\TokenResponse.vb" />
+    <Compile Include="Zoom\Models\User.vb" />
     <Compile Include="Zoom\TestUI.aspx.designer.vb">
       <DependentUpon>TestUI.aspx</DependentUpon>
     </Compile>
