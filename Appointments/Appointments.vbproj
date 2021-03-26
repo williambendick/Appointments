@@ -297,6 +297,7 @@
       <DependentUpon>AuthorizationResponse.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Zoom\DB.vb" />
     <Compile Include="Zoom\Models\Meeting.vb" />
     <Compile Include="Zoom\Models\Response.vb" />
     <Compile Include="Zoom\Models\ResponseError.vb" />
@@ -307,7 +308,7 @@
     </Compile>
     <Compile Include="Zoom\TestUI.aspx.vb">
       <DependentUpon>TestUI.aspx</DependentUpon>
-      <SubType>ASPXCodebehind</SubType>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
