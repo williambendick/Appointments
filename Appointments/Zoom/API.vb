@@ -1,4 +1,4 @@
-Imports System.IO
+﻿Imports System.IO
 Imports System.Net
 Imports System.Web.Configuration
 Imports Newtonsoft.Json
@@ -6,11 +6,12 @@ Imports Newtonsoft.Json.Serialization
 
 Namespace Zoom
     Public Class API
-        Shared ReadOnly encodedClientCredentials As String
+        Shared ReadOnly EncodedClientCredentials As String
+        Public Shared ReadOnly BaseUrl As String = "https://api.zoom.us/v2"
 
         Shared Sub New()
             Dim credentialBytes As Byte() = Encoding.ASCII.GetBytes(WebConfigurationManager.AppSettings("ZoomKey") & ":" & WebConfigurationManager.AppSettings("ZoomSecret"))
-            encodedClientCredentials = Convert.ToBase64String(credentialBytes)
+            EncodedClientCredentials = Convert.ToBase64String(credentialBytes)
         End Sub
 
         'redirect user to zoom site to authorize this application
@@ -33,46 +34,55 @@ Namespace Zoom
 
         End Sub
 
-        'get initial access token from zoom after user has authorized application
-        Public Shared Sub InitializeTokens(code As String)
+        Public Shared Function InitializeUser(bmtId As String, authorizationCode As String) As String
 
+            Dim result As String
+            Dim errMsg As String = "An error occurred when "
+
+            'get initial zoom tokens for user
             Dim requestUri As String = "https://zoom.us/oauth/token?grant_type=authorization_code" &
-                "&code=" & code &
+                "&code=" & authorizationCode &
                 "&redirect_uri=" & WebConfigurationManager.AppSettings("ZoomRedirectURI")
 
             Uri.EscapeUriString(requestUri)
 
-            Dim requestHeaders = New NameValueCollection() From {
-                {"Authorization", "Basic " & encodedClientCredentials}
-            }
+            Dim requestHeaders = New NameValueCollection() From {{"Authorization", "Basic " & EncodedClientCredentials}}
 
-            Dim result As Response(Of TokenResponse) = Request(Of TokenResponse, Object)(requestUri, "post", requestHeaders, Nothing)
+            Dim tokenResponse As Response(Of TokenResponse) = Request(Of TokenResponse, Object)(requestUri, "post", requestHeaders, Nothing)
 
-            If result.Error Is Nothing Then
-                SetTokens(result.Data.AccessToken, result.Data.RefreshToken)
-            Else
-                Throw New Exception(result.Error.Message)
-            End If
+            If tokenResponse.Error IsNot Nothing Then Return errMsg & "getting initial tokens for user: " & tokenResponse.Error.Message
 
-        End Sub
+            'get user's zoom data
+            Dim user As User = New User()
+
+            result = user.Retrieve(tokenResponse.Data.AccessToken)
+
+            If result <> "success" Then Return errMsg & "getting user's zoom data: " & result
+
+            'set user's id and tokens in DB
+            result = SetTokens(tokenResponse.Data.AccessToken, tokenResponse.Data.RefreshToken, bmtId, user.Id)
+
+            If result <> "success" Then Return errMsg & "setting user's zoom id and tokens: " & result
+
+            Return "success"
+
+        End Function
 
         'refresh expired tokens
-        Public Shared Function RefreshToken() As String
+        Public Shared Function RefreshToken(bmtUserId As String) As String
 
-            Dim refreshedToken As String = GetToken("refresh")
+            Dim refreshedToken As String = GetToken("refresh", bmtUserId)
 
-            If refreshedToken Is Nothing Then Throw New Exception("refresh token does not exist.")
+            If refreshedToken = "token not found" Then Return refreshedToken
 
             Dim requestUri As String = "https://zoom.us/oauth/token?grant_type=refresh_token&refresh_token=" & refreshedToken
 
-            Dim requestHeaders = New NameValueCollection() From {
-                {"Authorization", "Basic " & encodedClientCredentials}
-            }
+            Dim requestHeaders = New NameValueCollection() From {{"Authorization", "Basic " & EncodedClientCredentials}}
 
             Dim result As Response(Of TokenResponse) = Request(Of TokenResponse, Object)(requestUri, "post", requestHeaders, Nothing)
 
             If result.Error Is Nothing Then
-                SetTokens(result.Data.AccessToken, result.Data.RefreshToken)
+                SetTokens(result.Data.AccessToken, result.Data.RefreshToken, bmtUserId)
                 Return result.Data.AccessToken
             Else
                 Throw New Exception(result.Error.Message)
@@ -80,34 +90,48 @@ Namespace Zoom
 
         End Function
 
-        'store access and refresh tokens in cookies (these tokens could be stored in DB instead)
-        Private Shared Sub SetTokens(accessToken As String, refreshToken As String)
+        Public Shared Function SetTokens(accessToken As String, refreshToken As String, bmtUserId As String, Optional zoomUserId As String = "") As String
 
-            Dim zat As HttpCookie = New HttpCookie("ZAT", accessToken)
-            zat.Expires = Date.Now.AddYears(15)
-            zat.HttpOnly = True
-            zat.Secure = True
-            HttpContext.Current.Response.Cookies.Add(zat)
+            Try
 
-            Dim zrt As HttpCookie = New HttpCookie("ZRT", refreshToken)
-            zrt.Expires = Date.Now.AddYears(15)
-            zrt.HttpOnly = True
-            zrt.Secure = True
-            HttpContext.Current.Response.Cookies.Add(zrt)
+                Dim sql As String = "UPDATE Users SET "
 
-        End Sub
+                If zoomUserId = "" Then
+                    sql &= "ZoomAccessToken = '" & accessToken & "', ZoomRefreshToken = '" & refreshToken & "' "
+                Else
+                    sql &= "ZoomUserId = '" & zoomUserId & "', ZoomAccessToken = '" & accessToken & "', ZoomRefreshToken = '" & refreshToken & "' "
+                End If
+
+                sql &= "WHERE Id = '" & bmtUserId & "'"
+
+                DB.Update(sql)
+
+                Return "success"
+
+            Catch ex As Exception
+                Return ex.Message
+            End Try
+
+        End Function
 
         'get user's access or refresh token if it exists
-        Public Shared Function GetToken(tokenType As String) As String
+        Public Shared Function GetToken(tokenType As String, bmtUserId As String) As String
 
-            Dim cookieName As String = If(tokenType.ToLower() = "access", "ZAT", If(tokenType = "refresh", "ZRT", Nothing))
+            Try
 
-            If cookieName IsNot Nothing AndAlso HttpContext.Current.Request.Cookies(cookieName) IsNot Nothing _
-                AndAlso String.IsNullOrWhiteSpace(HttpContext.Current.Request.Cookies(cookieName).Value) = False Then
-                Return HttpContext.Current.Request.Cookies(cookieName).Value
-            End If
+                Dim fieldName As String = If(tokenType.ToLower() = "access", "ZoomAccessToken", "ZoomRefreshToken")
 
-            Return Nothing
+                Dim sql As String = "SELECT " & fieldName & " FROM Users WHERE Id = '" & bmtUserId & "'"
+
+                Dim result As String = DB.GetData(sql)
+
+                If result Is Nothing Then result = "token not found"
+
+                Return result
+
+            Catch ex As Exception
+                Throw New Exception("An error occurred when attempting to retrieve token: " & ex.Message)
+            End Try
 
         End Function
 

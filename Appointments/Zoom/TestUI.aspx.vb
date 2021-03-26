@@ -2,29 +2,51 @@
     Inherits Page
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+
+        If Request.QueryString("zoomAuthorizationResult") IsNot Nothing Then
+
+            If Session("zoomMeeting") IsNot Nothing Then
+
+                Dim meetingData As Zoom.Meeting = HttpContext.Current.Session("zoomMeeting")
+
+                If meetingData.ErrorMessage Is Nothing Then
+
+                    Select Case meetingData.Action.ToLower
+                        Case "create"
+                            lblResult.Text = "Zoom meeting created with id " & meetingData.Id.ToString()
+
+                        Case "update"
+                            lblResult.Text = "Zoom meeting with id " & meetingData.Id.ToString() & " was updated"
+
+                        Case "delete"
+                            lblResult.Text = "Zoom meeting with id " & meetingData.Id.ToString() & " was deleted"
+
+                    End Select
+                Else
+                    lblResult.Text = "An error occurred: " & meetingData.ErrorMessage
+                End If
+            Else
+                lblResult.Text = "Session object for zoom meeting does not exist."
+            End If
+        End If
     End Sub
 
     Protected Sub btnCreateMeeting_Click(sender As Object, e As EventArgs) Handles btnCreateMeeting.Click
 
-        If Request.Cookies("ZAT") Is Nothing Then
-            Zoom.API.RequestUserAuthorization("create-meeting")
-        Else
-            Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
+        Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
             {
+                .BMTUserId = "3",
                 .Topic = "Initial Meeting Topic",
                 .StartTime = Date.Now.AddHours(1),
                 .Duration = 60
             }
 
-            Dim result As String = meeting.Create()
+        Dim result As String = meeting.Create()
 
-            If result = "success" Then
-                lblResult.Text = "Zoom meeting created with id " & meeting.Id.ToString()
-            ElseIf result = "access token does not exist" Then
-                Zoom.API.RequestUserAuthorization("create-meeting")
-            Else
-                lblResult.Text = "An error occurred: " & result
-            End If
+        If result = "success" Then
+            lblResult.Text = "Zoom meeting created with id " & meeting.Id.ToString()
+        Else
+            lblResult.Text = "An error occurred: " & result
         End If
 
     End Sub
@@ -36,28 +58,22 @@
             Exit Sub
         End If
 
-        If Request.Cookies("ZAT") Is Nothing Then
-            Zoom.API.RequestUserAuthorization("update-meeting")
+        'only the properties that are included in this object wll be updated
+        Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
+        {
+            .BMTUserId = "4",
+            .Id = txtUpdateMeeting.Text,
+            .Topic = "Updated Meeting Topic",
+            .StartTime = Date.Now.AddHours(24),
+            .Duration = 120
+        }
+
+        Dim result As String = meeting.Update()
+
+        If result = "success" Then
+            lblResult.Text = "Zoom meeting with id " & meeting.Id.ToString() & " was updated"
         Else
-
-            'only the properties that are included in this object wll be updated
-            Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
-            {
-                .Id = txtUpdateMeeting.Text,
-                .Topic = "Updated Meeting Topic",
-                .StartTime = Date.Now.AddHours(24),
-                .Duration = 120
-            }
-
-            Dim result As String = meeting.Update()
-
-            If result = "success" Then
-                lblResult.Text = "Zoom meeting with id " & meeting.Id.ToString() & " was updated"
-            ElseIf result = "access token does not exist" Then
-                Zoom.API.RequestUserAuthorization("update-meeting")
-            Else
-                lblResult.Text = "An error occurred: " & result
-            End If
+            lblResult.Text = "An error occurred: " & result
         End If
 
     End Sub
@@ -69,21 +85,18 @@
             Exit Sub
         End If
 
-        If Request.Cookies("ZAT") Is Nothing Then
-            Zoom.API.RequestUserAuthorization("delete-meeting")
+        Dim meeting As Zoom.Meeting = New Zoom.Meeting() With
+        {
+            .BMTUserId = "4",
+            .Id = txtDeleteMeeting.Text
+        }
+
+        Dim result As String = meeting.Delete()
+
+        If result = "success" Then
+            lblResult.Text = "Zoom meeting with id " & meeting.Id.ToString() & " was deleted"
         Else
-
-            Dim meeting As Zoom.Meeting = New Zoom.Meeting() With {.Id = txtDeleteMeeting.Text}
-
-            Dim result As String = meeting.Delete()
-
-            If result = "success" Then
-                lblResult.Text = "Zoom meeting with id " & meeting.Id.ToString() & " was deleted"
-            ElseIf result = "access token does not exist" Then
-                Zoom.API.RequestUserAuthorization("delete-meeting")
-            Else
-                lblResult.Text = "An error occurred: " & result
-            End If
+            lblResult.Text = "An error occurred: " & result
         End If
 
     End Sub
