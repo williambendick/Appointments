@@ -14,11 +14,13 @@ Namespace Zoom
         End Sub
 
         'redirect user to zoom site to authorize this application
-        Public Shared Sub RequestUserAuthorization()
+        Public Shared Sub RequestUserAuthorization(meeting As Meeting)
 
             Dim authorizationGuid As Guid = Guid.NewGuid
-            Dim session As Meeting = HttpContext.Current.Session("zoomMeeting")
-            session.AuthorizationId = authorizationGuid
+
+            meeting.AuthorizationId = authorizationGuid
+
+            HttpContext.Current.Session("zoomMeeting") = meeting
 
             Dim zoomUri As String = "https://zoom.us/oauth/authorize?response_type=code" &
                 "&client_id=" & WebConfigurationManager.AppSettings("ZoomKey") &
