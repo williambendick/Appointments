@@ -187,6 +187,7 @@
     <Content Include="Google\luxon.min.js" />
     <Content Include="Google\UI.aspx" />
     <Content Include="Zoom\AuthorizationResponse.aspx" />
+    <Content Include="Zoom\DeauthorizationNotification.aspx" />
     <Content Include="Zoom\TestUI.aspx" />
     <Content Include="Docs\Google JS vs DOTNET Libraries.docx" />
     <Content Include="Docs\Google JS Library\1 Create Credentials.docx" />
@@ -298,6 +299,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Zoom\DB.vb" />
+    <Compile Include="Zoom\DeauthorizationNotification.aspx.designer.vb">
+      <DependentUpon>DeauthorizationNotification.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Zoom\DeauthorizationNotification.aspx.vb">
+      <DependentUpon>DeauthorizationNotification.aspx</DependentUpon>
+      <SubType>ASPXCodebehind</SubType>
+    </Compile>
     <Compile Include="Zoom\Models\Meeting.vb" />
     <Compile Include="Zoom\Models\Response.vb" />
     <Compile Include="Zoom\Models\ResponseError.vb" />
