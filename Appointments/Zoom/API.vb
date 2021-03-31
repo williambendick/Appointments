@@ -1,4 +1,4 @@
-﻿Imports System.IO
+Imports System.IO
 Imports System.Net
 Imports System.Web.Configuration
 Imports Newtonsoft.Json
@@ -195,7 +195,7 @@ Namespace Zoom
             Return response
         End Function
 
-        Private Shared Function SerializeData(data As Object) As String
+        Public Shared Function SerializeData(data As Object) As String
 
             Dim contractResolver As DefaultContractResolver = New DefaultContractResolver With {
                 .NamingStrategy = New SnakeCaseNamingStrategy()
@@ -203,13 +203,13 @@ Namespace Zoom
 
             Return JsonConvert.SerializeObject(data, New JsonSerializerSettings With {
                 .NullValueHandling = NullValueHandling.Ignore,
-                .DateFormatString = "yyyy-MM-ddTHH:mm:ss",
+                .DateFormatString = "yyyy-MM-ddTHH:mm:ss.fffZ",
                 .ContractResolver = contractResolver
             })
 
         End Function
 
-        Private Shared Function DeserializeData(Of T)(data As String) As T
+        Public Shared Function DeserializeData(Of T)(data As String) As T
 
             Dim contractResolver As DefaultContractResolver = New DefaultContractResolver With {
                 .NamingStrategy = New SnakeCaseNamingStrategy()
