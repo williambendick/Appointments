@@ -1,4 +1,4 @@
-Imports System.IO
+﻿Imports System.IO
 Imports System.Net
 Imports System.Web.Configuration
 Imports Newtonsoft.Json
@@ -6,12 +6,17 @@ Imports Newtonsoft.Json.Serialization
 
 Namespace Zoom
     Public Class API
-        Shared ReadOnly EncodedClientCredentials As String
+        Public Shared ReadOnly EncodedClientCredentials As String
+        Public Shared ReadOnly EncodedClientCredentialsProduction As String
         Public Shared ReadOnly BaseUrl As String = "https://api.zoom.us/v2"
 
         Shared Sub New()
             Dim credentialBytes As Byte() = Encoding.ASCII.GetBytes(WebConfigurationManager.AppSettings("ZoomKey") & ":" & WebConfigurationManager.AppSettings("ZoomSecret"))
             EncodedClientCredentials = Convert.ToBase64String(credentialBytes)
+
+            Dim credentialBytesProduction As Byte() = Encoding.ASCII.GetBytes(WebConfigurationManager.AppSettings("ZoomKeyProduction") & ":" & WebConfigurationManager.AppSettings("ZoomSecretProduction"))
+            EncodedClientCredentialsProduction = Convert.ToBase64String(credentialBytesProduction)
+
         End Sub
 
         'redirect user to zoom site to authorize this application
