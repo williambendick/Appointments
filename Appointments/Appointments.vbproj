@@ -306,6 +306,9 @@
       <DependentUpon>DeauthorizationNotification.aspx</DependentUpon>
       <SubType>ASPXCodebehind</SubType>
     </Compile>
+    <Compile Include="Zoom\Models\Compliance.vb" />
+    <Compile Include="Zoom\Models\Deauthorization.vb" />
+    <Compile Include="Zoom\Models\DeauthorizationPayload.vb" />
     <Compile Include="Zoom\Models\Meeting.vb" />
     <Compile Include="Zoom\Models\Response.vb" />
     <Compile Include="Zoom\Models\ResponseError.vb" />
