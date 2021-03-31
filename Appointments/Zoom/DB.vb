@@ -32,14 +32,14 @@ Public Class DB
 
 
 
-    Public Shared Function Update(sql As String) As String
+    Public Shared Function Update(sql As String) As Integer
+
+        Dim result As Integer
 
         Try
 
             Dim cs As String = "Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=bmt;Integrated Security=True;Connect Timeout=30;Encrypt=False;" &
                 "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"
-
-            Dim result As Integer
 
             Using cn As New SqlConnection(cs)
 
@@ -55,10 +55,10 @@ Public Class DB
             End Using
 
         Catch ex As Exception
-            Return ex.Message
+            Return -1
         End Try
 
-        Return ""
+        Return result
 
     End Function
 
