@@ -99,7 +99,8 @@ Namespace Zoom
                 If zoomUserId = "" Then
                     sql &= "ZoomAccessToken = '" & accessToken & "', ZoomRefreshToken = '" & refreshToken & "' "
                 Else
-                    sql &= "ZoomUserId = '" & zoomUserId & "', ZoomAccessToken = '" & accessToken & "', ZoomRefreshToken = '" & refreshToken & "' "
+                    sql &= "ZoomUserId = '" & zoomUserId & "', ZoomAccessToken = '" & accessToken & "', 
+                        ZoomRefreshToken = '" & refreshToken & ", ZoomDeauthorizationResult = NULL' "
                 End If
 
                 sql &= "WHERE Id = '" & bmtUserId & "'"
